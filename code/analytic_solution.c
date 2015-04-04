@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #define NPOINTS 1000
-#define NPOINTSX 100
+#define NPOINTSX 200
 #define TEMP 10000.0
 #define R 1.0
 #define PI 3.141592653589793238462643383279502884197169
@@ -27,8 +27,8 @@ int main(int argc, char **argv){
   FILE * in;
   double *x;
   double *j_int;
-  double min_x=-50.0;
-  double max_x= 50.0;
+  double min_x=-8.0;
+  double max_x= 7.0;
   double delta_x = (max_x-min_x)/NPOINTSX;
   double delta_phi = 2.0*PI/NPOINTS;
   double delta_b = 0.9999/NPOINTS;
