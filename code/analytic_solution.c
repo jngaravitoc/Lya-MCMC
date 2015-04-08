@@ -27,8 +27,8 @@ int main(int argc, char **argv){
   FILE * in;
   double *x;
   double *j_int;
-  double min_x=-7.4;
-  double max_x= 7.4;
+  double min_x=-8;
+  double max_x= 8;
   double delta_x = (max_x-min_x)/NPOINTSX;
   double delta_phi = 2.0*PI/NPOINTS;
   double delta_b = 0.9999/NPOINTS;
