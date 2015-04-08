@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #define NPOINTS 1000
-#define NPOINTSX 200
+#define NPOINTSX 400
 #define TEMP 10000.0
 #define R 1.0
 #define PI 3.141592653589793238462643383279502884197169
@@ -13,27 +13,32 @@
   transfer problem of a rotating sphere.
 
   The solution was computed by Mark Dijsktra and is published in the 
-  paper: Garavito-Camargo, Forero-Romero, Dijkstra, ApJ ....
+  paper: 
+
+  The Impact of Gas Bulk Rotation on the Lyalpha Line
+  Garavito-Camargo, Forero-Romero, Dijkstra, 
+  The Astrophysical Journal, Volume 795, Issue 2, article id. 120, 12 pp. (2014)
 
   Author: Jaime E. Forero-Romero (Uniandes)
-  Creation date: 14-Jun-2014
+  Creation date: 14-Jun-2014. 
 
   Modifications:
+  6-Mar-2015. Included dynamic range in x.
 */
 
 double J_surface(double x, double b, double phi, double i_angle, double tau0, double v_rot);
 int main(int argc, char **argv){
   int i, j, k;
-  FILE * in;
+  FILE *in;
   double *x;
   double *j_int;
-  double min_x=-8;
-  double max_x= 8;
-  double delta_x = (max_x-min_x)/NPOINTSX;
+  double delta_x;
   double delta_phi = 2.0*PI/NPOINTS;
   double delta_b = 0.9999/NPOINTS;
   double tau, v_rot, i_angle;
   double b, phi;
+  double min_x=-8;
+  double max_x=8;
   double X, Y, Z;
   char filename[100] = "values";
 
@@ -50,8 +55,13 @@ int main(int argc, char **argv){
   }
   fclose(in);
 
-   
-  fprintf(stderr, "# %f %f %f\n", tau, v_rot, i_angle);
+
+  fprintf(stderr, "%f %f %f\n", tau, v_rot, i_angle);
+
+
+  min_x = -(pow(10,(log10(tau))/2.5) + v_rot)/15.0;
+  max_x = (pow(10,(log10(tau))/2.5) + v_rot)/15.0;
+  delta_x = (max_x-min_x)/NPOINTSX;
 
   if(!(x=malloc(sizeof(double)*NPOINTSX))){
     fprintf(stderr, "Problem with memory allocation");
@@ -72,7 +82,7 @@ int main(int argc, char **argv){
 	phi = delta_phi*j;
 	b = delta_b*k;
 	j_int[i] += 
-	  J_surface(x[i], b, phi, i_angle, tau, v_rot) * b * delta_phi * delta_b;
+	  J_surface(x[i], b, phi, i_angle, tau, v_rot) * b * delta_phi * delta_b; 
       }
     }
   }
@@ -97,7 +107,6 @@ double J_surface(double x, double b, double phi, double i_angle, double tau0, do
   s = -(sin(i_angle) * sqrt(R*R - b*b)) + (b * cos(phi) * cos(i_angle));  
 
   x_b = (v_rot/v_thermal) * sqrt(1.0- (s/R)*(s/R)) * cos(i_angle) * sin(beta);  
-
 
   arg_in = pow(fabs(x-x_b),3.0)/(a*tau0);
   arg_in = arg_in * sqrt((2.0*PI*PI*PI)/27.0);
